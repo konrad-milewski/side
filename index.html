@@ -1,28 +1,43 @@
-function scrollPage(direction) {
-  let scrollInterval = null;
-  const scrollStep = 10;
-  
-  const scrollFn = () => {
-    window.scrollBy(0, direction * scrollStep);
-  };
-  
-  const startScroll = () => {
-    scrollInterval = setInterval(scrollFn, 10);
-  };
-  
-  const stopScroll = () => {
-    clearInterval(scrollInterval);
-  };
-  
-  startScroll();
-  
-  // Listen for mouseup events on the document to stop scrolling
-  document.addEventListener('mouseup', stopScroll);
-  
-  // Stop scrolling when the button is released
-  const button = event.target;
-  button.addEventListener('mouseup', stopScroll);
-  
-  // Start scrolling when the button is held down
-  button.addEventListener('mousedown', startScroll);
-}
+import React, { useState, useEffect } from 'react';
+
+const MobileTwoFingerScroll = () => {
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  useEffect(() => {
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        setIsScrolling(true);
+      } else {
+        setIsScrolling(false);
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (isScrolling) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      setIsScrolling(false);
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isScrolling]);
+
+  return (
+    <div>
+      {/* your content goes here */}
+    </div>
+  );
+};
+
+export default MobileTwoFingerScroll;
