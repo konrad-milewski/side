@@ -1,87 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .container {
-  position: relative;
-  height: 100%;
-}
-
-.content {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-  background-color: #fff; /* Your content background color */
-}
-
-.menu {
-  position: fixed;
-  width: 20%;
-  height: 100%;
-  right: -20%; /* Start the menu off-screen */
-  top: 0;
-  z-index: 2;
-  background-color: #333; /* Your menu background color */
-  transition: right 0.3s ease-in-out; /* Smooth animation when the menu slides in and out */
-}
-
-    </style>
-</head>
-<body>
-    <div class="container">
-      <div class="content">
-       <h1>SIEMA</h1>
-      </div>
-      <div class="menu">
-<h1>JEAAA MENU</h1>      </div>
-    </div>
-    <script>
-   let container = document.querySelector('.container');
-let menu = document.querySelector('.menu');
-let startX, startY, distX, distY;
-
-container.addEventListener('touchstart', function(e) {
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
-  distX = 0;
-  distY = 0;
-  console.log("touchstart event triggered");
-});
-
-container.addEventListener('touchmove', function(e) {
-  let touch = e.touches[0];
-  distX = touch.clientX - startX;
-  distY = touch.clientY - startY;
-
-  if (distX < 0) {
-    distX = 0;
-  }
-
-  if (distX > window.innerWidth * 0.2) {
-    distX = window.innerWidth * 0.2;
-  }
-
-  menu.style.right = '-20%' + distX + 'px';
-  console.log("touchmove event triggered, distX: " + distX);
-});
-
-container.addEventListener('touchend', function(e) {
-  if (distX > window.innerWidth * 0.1) {
-    menu.style.right = 0;
-  } else {
-    menu.style.right = '-20%';
-  }
-  console.log("touchend event triggered");
-});
-
-    </script>
-  </body>
+function scrollPage(direction) {
+  let scrollInterval = null;
+  const scrollStep = 10;
   
-</html>
+  const scrollFn = () => {
+    window.scrollBy(0, direction * scrollStep);
+  };
+  
+  const startScroll = () => {
+    scrollInterval = setInterval(scrollFn, 10);
+  };
+  
+  const stopScroll = () => {
+    clearInterval(scrollInterval);
+  };
+  
+  startScroll();
+  
+  // Listen for mouseup events on the document to stop scrolling
+  document.addEventListener('mouseup', stopScroll);
+  
+  // Stop scrolling when the button is released
+  const button = event.target;
+  button.addEventListener('mouseup', stopScroll);
+  
+  // Start scrolling when the button is held down
+  button.addEventListener('mousedown', startScroll);
+}
