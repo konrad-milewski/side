@@ -1,43 +1,56 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sliding Menu</title>
+  
+</head>
+<body>
+    <div id="swipeable" style="position: fixed; top: 0; left: 0; height: 150px; width: 100%; background-color: blue;"></div>
 
-const MobileTwoFingerScroll = () => {
-  const [isScrolling, setIsScrolling] = useState(false);
+  
+  <script>
+   var swipeable = document.getElementById('swipeable');
 
-  useEffect(() => {
-    const handleTouchStart = (e) => {
-      if (e.touches.length === 2) {
-        setIsScrolling(true);
-      } else {
-        setIsScrolling(false);
-      }
-    };
+swipeable.addEventListener('touchstart', handleTouchStart, false);
+swipeable.addEventListener('touchmove', handleTouchMove, false);
 
-    const handleTouchMove = (e) => {
-      if (isScrolling) {
-        e.preventDefault();
-      }
-    };
+var xDown = null;
+var yDown = null;
 
-    const handleTouchEnd = () => {
-      setIsScrolling(false);
-    };
+function getTouches(evt) {
+  return evt.touches ||             // browser API
+         evt.originalEvent.touches; // jQuery
+}                                                     
 
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd);
+function handleTouchStart(evt) {
+    const firstTouch = getTouches(evt)[0];                                      
+    xDown = firstTouch.clientX;                                      
+    yDown = firstTouch.clientY;                                      
+};                                                
 
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [isScrolling]);
+function handleTouchMove(evt) {
+    if ( ! xDown || ! yDown ) {
+        return;
+    }
 
-  return (
-    <div>
-      {/* your content goes here */}
-    </div>
-  );
+    var xUp = evt.touches[0].clientX;                                    
+    var yUp = evt.touches[0].clientY;
+
+    var xDiff = xDown - xUp;
+    var yDiff = yDown - yUp;
+
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+        if ( xDiff > 0 ) {
+            console.log('left');
+        } else {
+            console.log('right');
+        }                       
+    } 
+    /* reset values */
+    xDown = null;
+    yDown = null;                                             
 };
 
-export default MobileTwoFingerScroll;
+  </script>
+</body>
+</html>
