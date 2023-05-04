@@ -8,6 +8,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import HelpIcon from "@mui/icons-material/Help";
 
 // Define a custom component for the next arrow
 function NextArrow(props) {
@@ -30,7 +31,7 @@ function PrevArrow(props) {
 }
 
 // Define the tutorial wrapper component
-function TutorialWrapper({ children }) {
+function TutorialWrapper({ children, openState }) {
   // State for the notification
   const [open, setOpen] = useState(false);
 
@@ -228,29 +229,10 @@ function TutorialWrapper({ children }) {
           </Carousel>
         </DialogContent>
       </Dialog>
+
+      <HelpIcon onClick={() => setTutorial(true)} />
     </div>
   );
 }
 
 export default TutorialWrapper;
-
-
-APP:
-
-// App.js
-import React from "react";
-import TutorialWrapper from "./TutorialWrapper";
-
-function App() {
-  return (
-    <TutorialWrapper>
-      <h1>Welcome to my app</h1>
-      <div>
-        <h2>This is the main content</h2>
-        {/* Add your main content here */}
-      </div>
-    </TutorialWrapper>
-  );
-}
-
-export default App;
