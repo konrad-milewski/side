@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import LockIcon from '@material-ui/icons/Lock';
 
 function Container() {
   const [pointerEvents, setPointerEvents] = useState('initial');
   const [locked, setLocked] = useState(false);
+
+  // get the locked state from localStorage when the component mounts
+  useEffect(() => {
+    const storedLocked = localStorage.getItem('locked');
+    if (storedLocked) {
+      setLocked(JSON.parse(storedLocked));
+      // set the pointer events accordingly
+      setPointerEvents(JSON.parse(storedLocked) ? 'none' : 'initial');
+    }
+  }, []);
+
+  // update the localStorage when the locked state changes
+  useEffect(() => {
+    localStorage.setItem('locked', JSON.stringify(locked));
+  }, [locked]);
 
   function handleLockClick() {
     // toggle pointer events
@@ -16,7 +31,7 @@ function Container() {
   return (
     <div style={{ pointerEvents }}>
       {/* some content */}
-      <div onClick={handleLockClick}>
+      <div onClick={handleLockClick} style={{ backgroundColor: 'white', borderRadius: '50%', padding: '5px' }}>
         {locked ? <LockIcon /> : <LockOpenIcon />}
       </div>
     </div>
