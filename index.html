@@ -57,7 +57,7 @@ function TutorialWrapper({ children }) {
       // Check if one week has passed since the user skipped the tutorial
       const skipTime = localStorage.getItem("skipTime");
       const currentTime = Date.now();
-      const oneWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in one week
+      const oneWeek = 14 * 24 * 60 * 60 * 1000; // milliseconds in one week
       if (currentTime - skipTime >= oneWeek) {
         // Set the flag to "pending" and show the notification again
         localStorage.setItem("tutorialFlag", "pending");
