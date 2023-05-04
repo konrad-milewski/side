@@ -1,25 +1,23 @@
 import React, { useEffect } from "react";
-import { v4 as uuidv4 } from "uuid"; // a library to generate unique ids
 
 export const App = () => {
   useEffect(() => {
-    // check if the user has an id stored in localStorage
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-      // user has already opened the app before, do nothing
-      console.log("Welcome back, user " + userId);
-    } else {
-      // user is opening the app for the first time, generate a new id and save it in localStorage
-      const newUserId = uuidv4();
-      localStorage.setItem("userId", newUserId);
-      console.log("Welcome, new user " + newUserId);
-
-      // fetch the data.json file and append the new user id to it
-      fetch("data.json")
-        .then((response) => response.json())
-        .then((data) => {
-          // data is an array of objects, each object represents a user
-          data.push({ id: newUserId }); // add the new user object to the array
+    // fetch the data.json file and check if the user id is in it
+    fetch("data.json")
+      .then((response) => response.json())
+      .then((data) => {
+        // data is an array of objects, each object represents a user
+        // get the user id from comsiIdRef.current
+        const userId = comsiIdRef.current;
+        // find the user object that matches the user id
+        const user = data.find((user) => user.id === userId);
+        if (user) {
+          // user is already in the database, do nothing
+          console.log("Welcome back, user " + userId);
+        } else {
+          // user is not in the database, add them to it
+          console.log("Welcome, new user " + userId);
+          data.push({ id: userId }); // add the new user object to the array
           // convert the data array back to JSON string and save it to a new file
           const newData = JSON.stringify(data);
           // use FileSaver.js library to save the file locally
@@ -27,8 +25,8 @@ export const App = () => {
           const FileSaver = require("file-saver");
           const blob = new Blob([newData], { type: "application/json" });
           FileSaver.saveAs(blob, "data.json");
-        });
-    }
+        }
+      });
   }, []); // only run once when the component mounts
 
   return <div>App</div>;
