@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 function Container() {
   const [pointerEvents, setPointerEvents] = useState('initial');
+  const timer = useRef(null);
 
-  function handleClick() {
-    // toggle pointer events between 'initial' and 'none'
-    setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
+  function handleTouchStart() {
+    // start a timer when touch starts
+    timer.current = setTimeout(() => {
+      // toggle pointer events after 500 ms
+      setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
+    }, 500);
+  }
+
+  function handleTouchEnd() {
+    // clear the timer when touch ends
+    clearTimeout(timer.current);
   }
 
   return (
-    <div onDoubleClick={handleClick} style={{ pointerEvents }}>
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ pointerEvents }}>
       {/* some content */}
     </div>
   );
