@@ -100,7 +100,7 @@ function TutorialWrapper({ children }) {
             }}
             onClick={handleTutorialClose}
           />
-          <Carousel navButtonsAlwaysVisible>
+          <Carousel navButtonsAlwaysVisible interval={99999}>
             {items.map((item, i) => (
               <div key={i} style={{ position: "relative" }}>
                 <img
