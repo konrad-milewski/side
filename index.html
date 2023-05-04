@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, Snackbar, Dialog, DialogContent } from "@material-ui/core";
 import Carousel from "react-material-ui-carousel";
-import CloseIcon from "@material-ui/icons/Close";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 // Define a custom component for the next arrow
 function NextArrow(props) {
   const { onClick } = props;
   return (
-    <Button onClick={onClick}>
-      <ArrowForwardIcon style={{ color: "black" }} />
+    <Button onClick={onClick} style={{ color: "red" }}>
+      <ChevronRightIcon />
     </Button>
   );
 }
@@ -20,8 +23,8 @@ function NextArrow(props) {
 function PrevArrow(props) {
   const { onClick } = props;
   return (
-    <Button onClick={onClick}>
-      <ArrowBackIcon style={{ color: "black" }} />
+    <Button onClick={onClick} style={{ color: "red" }}>
+      <ChevronLeftIcon />
     </Button>
   );
 }
@@ -60,6 +63,9 @@ function TutorialWrapper({ children }) {
         localStorage.setItem("tutorialFlag", "pending");
         setOpen(true);
       }
+    } else if (tutorialFlag === "completed") {
+      // Do nothing if the flag is "completed"
+      return;
     }
   }, []);
 
@@ -76,8 +82,8 @@ function TutorialWrapper({ children }) {
     // Close the notification and set the tutorial state to true
     setOpen(false);
     setTutorial(true);
-    // Set the flag to "started" in local storage
-    localStorage.setItem("tutorialFlag", "started");
+    // Set the flag to "completed" in local storage
+    localStorage.setItem("tutorialFlag", "completed");
   };
 
   // Handle the tutorial skip event
@@ -93,12 +99,10 @@ function TutorialWrapper({ children }) {
 
   // Handle the tutorial close event
   const handleTutorialClose = () => {
-    // Set the tutorial state to false
+    // Close the tutorial and set the tutorial state to false
     setTutorial(false);
-    // Set the flag to "skipped" in local storage
-    localStorage.setItem("tutorialFlag", "skipped");
-    // Store the current time in local storage
-    localStorage.setItem("skipTime", Date.now());
+    // Set the flag to "completed" in local storage
+    localStorage.setItem("tutorialFlag", "completed");
   };
 
   // Handle the carousel change event
@@ -121,7 +125,7 @@ function TutorialWrapper({ children }) {
     },
     {
       image: "https://via.placeholder.com/300x400",
-      explanation: "This is the second step of the tutorial."
+      explanation: "This is the second"
     },
     {
       icon: <CheckCircleIcon style={{ fontSize: "300px", color: "green" }} />,
