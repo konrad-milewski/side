@@ -1,7 +1,4 @@
-import React, { useEffect } from "react";
-
-export const App = () => {
-  useEffect(() => {
+ useEffect(() => {
     // fetch the data.json file and check if the user id is in it
     fetch("data.json")
       .then((response) => response.text()) // get the response as text
@@ -19,16 +16,16 @@ export const App = () => {
           // user is not in the database, add them to it
           console.log("Welcome, new user " + userId);
           data.push({ id: userId }); // add the new user object to the array
-          // convert the data array back to JSON string and save it to a new file
+          // convert the data array back to JSON string and save it to the same file
           const newData = JSON.stringify(data);
-          // use FileSaver.js library to save the file locally
-          // you may need to install it using npm install file-saver
-          const FileSaver = require("file-saver");
-          const blob = new Blob([newData], { type: "application/json" });
-          FileSaver.saveAs(blob, "data.json");
+          // use fs.writeFile to overwrite the file with the new data
+          fs.writeFile("data.json", newData, (err) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log("File saved successfully.");
+            }
+          });
         }
       });
   }, []); // only run once when the component mounts
-
-  return <div>App</div>;
-};
