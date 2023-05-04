@@ -1,41 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import LockIcon from '@material-ui/icons/Lock';
+import React, { useEffect } from "react";
+import { v4 as uuidv4 } from "uuid"; // a library to generate unique ids
 
-function Container() {
-  const [pointerEvents, setPointerEvents] = useState('initial');
-  const [locked, setLocked] = useState(false);
-
-  // get the locked state from localStorage when the component mounts
+export const App = () => {
   useEffect(() => {
-    const storedLocked = localStorage.getItem('locked');
-    if (storedLocked) {
-      setLocked(JSON.parse(storedLocked));
-      // set the pointer events accordingly
-      setPointerEvents(JSON.parse(storedLocked) ? 'none' : 'initial');
+    // check if the user has an id stored in localStorage
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      // user has already opened the app before, do nothing
+      console.log("Welcome back, user " + userId);
+    } else {
+      // user is opening the app for the first time, generate a new id and save it in localStorage
+      const newUserId = uuidv4();
+      localStorage.setItem("userId", newUserId);
+      console.log("Welcome, new user " + newUserId);
+
+      // fetch the data.json file and append the new user id to it
+      fetch("data.json")
+        .then((response) => response.json())
+        .then((data) => {
+          // data is an array of objects, each object represents a user
+          data.push({ id: newUserId }); // add the new user object to the array
+          // convert the data array back to JSON string and save it to a new file
+          const newData = JSON.stringify(data);
+          // use FileSaver.js library to save the file locally
+          // you may need to install it using npm install file-saver
+          const FileSaver = require("file-saver");
+          const blob = new Blob([newData], { type: "application/json" });
+          FileSaver.saveAs(blob, "data.json");
+        });
     }
-  }, []);
+  }, []); // only run once when the component mounts
 
-  // update the localStorage when the locked state changes
-  useEffect(() => {
-    localStorage.setItem('locked', JSON.stringify(locked));
-  }, [locked]);
-
-  function handleLockClick() {
-    // toggle pointer events
-    setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
-    // toggle locked state
-    setLocked(!locked);
-  }
-
-  return (
-    <div style={{ pointerEvents }}>
-      {/* some content */}
-      <div onClick={handleLockClick} style={{ backgroundColor: 'white', borderRadius: '50%', padding: '5px' }}>
-        {locked ? <LockIcon /> : <LockOpenIcon />}
-      </div>
-    </div>
-  );
-}
-
-export default Container;
+  return <div>App</div>;
+};
