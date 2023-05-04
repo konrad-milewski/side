@@ -1,34 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
 
 function Container() {
   const [pointerEvents, setPointerEvents] = useState('initial');
-  const [tapCount, setTapCount] = useState(0);
-  const timer = useRef(null);
+  const [locked, setLocked] = useState(false);
 
-  function handleTouchStart() {
-    // increment the tap count
-    setTapCount(tapCount + 1);
-    // start a timer to reset the tap count
-    timer.current = setTimeout(() => {
-      setTapCount(0);
-    }, 300); // adjust the time interval as needed
-  }
-
-  function handleTouchEnd() {
-    // clear the timer
-    clearTimeout(timer.current);
-    // check if the tap count is 2
-    if (tapCount === 2) {
-      // toggle pointer events
-      setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
-      // reset the tap count
-      setTapCount(0);
-    }
+  function handleLockClick() {
+    // toggle pointer events
+    setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
+    // toggle locked state
+    setLocked(!locked);
   }
 
   return (
-    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ pointerEvents }}>
+    <div style={{ pointerEvents }}>
       {/* some content */}
+      <div onClick={handleLockClick}>
+        {locked ? <LockIcon /> : <LockOpenIcon />}
+      </div>
     </div>
   );
 }
