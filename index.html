@@ -4,9 +4,10 @@ export const App = () => {
   useEffect(() => {
     // fetch the data.json file and check if the user id is in it
     fetch("data.json")
-      .then((response) => response.json())
+      .then((response) => response.text()) // get the response as text
       .then((data) => {
-        // data is an array of objects, each object represents a user
+        // data is a string, parse it as JSON
+        data = JSON.parse(data); // data is now an array of objects
         // get the user id from comsiIdRef.current
         const userId = comsiIdRef.current;
         // find the user object that matches the user id
