@@ -1,31 +1,143 @@
- useEffect(() => {
-    // fetch the data.json file and check if the user id is in it
-    fetch("data.json")
-      .then((response) => response.text()) // get the response as text
-      .then((data) => {
-        // data is a string, parse it as JSON
-        data = JSON.parse(data); // data is now an array of objects
-        // get the user id from comsiIdRef.current
-        const userId = comsiIdRef.current;
-        // find the user object that matches the user id
-        const user = data.find((user) => user.id === userId);
-        if (user) {
-          // user is already in the database, do nothing
-          console.log("Welcome back, user " + userId);
-        } else {
-          // user is not in the database, add them to it
-          console.log("Welcome, new user " + userId);
-          data.push({ id: userId }); // add the new user object to the array
-          // convert the data array back to JSON string and save it to the same file
-          const newData = JSON.stringify(data);
-          // use fs.writeFile to overwrite the file with the new data
-          fs.writeFile("data.json", newData, (err) => {
-            if (err) {
-              console.error(err);
-            } else {
-              console.log("File saved successfully.");
-            }
-          });
+// TutorialWrapper.js
+import React, { useState, useEffect } from "react";
+import { Button, Snackbar, Dialog, DialogContent } from "@material-ui/core";
+import Carousel from "react-material-ui-carousel";
+import CloseIcon from "@material-ui/icons/Close";
+
+function TutorialWrapper({ children }) {
+  // State for the notification
+  const [open, setOpen] = useState(false);
+
+  // State for the tutorial
+  const [tutorial, setTutorial] = useState(false);
+
+  // Check local storage for the first visit flag
+  useEffect(() => {
+    const firstVisit = localStorage.getItem("firstVisit");
+    if (firstVisit === null) {
+      // Set the flag to true and show the notification
+      localStorage.setItem("firstVisit", "true");
+      setOpen(true);
+    }
+  }, []);
+
+  // Handle the notification close event
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  // Handle the tutorial start event
+  const handleStart = () => {
+    // Close the notification and set the tutorial state to true
+    setOpen(false);
+    setTutorial(true);
+  };
+
+  // Handle the tutorial skip event
+  const handleSkip = () => {
+    // Close the notification and set the tutorial state to false
+    setOpen(false);
+    setTutorial(false);
+  };
+
+  // Handle the tutorial close event
+  const handleTutorialClose = () => {
+    // Set the tutorial state to false
+    setTutorial(false);
+  };
+
+  // Define the tutorial items
+  const items = [
+    {
+      image: "https://via.placeholder.com/300x400",
+      explanation: "This is the first step of the tutorial."
+    },
+    {
+      image: "https://via.placeholder.com/300x400",
+      explanation: "This is the second step of the tutorial."
+    },
+    {
+      image: "https://via.placeholder.com/300x400",
+      explanation: "This is the third step of the tutorial."
+    }
+  ];
+
+  return (
+    <div className="TutorialWrapper">
+      {children}
+      <Snackbar
+        open={open}
+        onClose={handleClose}
+        message="Do you want a tutorial?"
+        action={
+          <div>
+            <Button color="secondary" size="small" onClick={handleSkip}>
+              SKIP
+            </Button>
+            <Button color="primary" size="small" onClick={handleStart}>
+              START
+            </Button>
+          </div>
         }
-      });
-  }, []); // only run once when the component mounts
+      />
+      <Dialog
+        style={{ textAlign: "center" }}
+        open={tutorial}
+        onClose={handleTutorialClose}
+        fullScreen
+      >
+        <DialogContent>
+          <h2>This is a tutorial</h2>
+          <CloseIcon
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              cursor: "pointer"
+            }}
+            onClick={handleTutorialClose}
+          />
+          <Carousel navButtonsAlwaysVisible>
+            {items.map((item, i) => (
+              <div key={i} style={{ position: "relative" }}>
+                <img
+                  src={item.image}
+                  alt={`Step ${i + 1}`}
+                  width="300"
+                  height="400"
+                />
+                <p>{item.explanation}</p>
+              </div>
+            ))}
+          </Carousel>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+export default TutorialWrapper;
+
+
+APP:
+
+// App.js
+import React from "react";
+import TutorialWrapper from "./TutorialWrapper";
+
+function App() {
+  return (
+    <TutorialWrapper>
+      <h1>Welcome to my app</h1>
+      <div>
+        <h2>This is the main content</h2>
+        {/* Add your main content here */}
+      </div>
+    </TutorialWrapper>
+  );
+}
+
+export default App;
