@@ -1,4 +1,3 @@
-// TutorialWrapper.js
 import React, { useState, useEffect } from "react";
 import { Button, Snackbar, Dialog, DialogContent } from "@material-ui/core";
 import Carousel from "react-material-ui-carousel";
@@ -11,13 +10,19 @@ function TutorialWrapper({ children }) {
   // State for the tutorial
   const [tutorial, setTutorial] = useState(false);
 
-  // Check local storage for the first visit flag
+  // Check local storage for the tutorial flag
   useEffect(() => {
-    const firstVisit = localStorage.getItem("firstVisit");
-    if (firstVisit === null) {
-      // Set the flag to true and show the notification
-      localStorage.setItem("firstVisit", "true");
+    const tutorialFlag = localStorage.getItem("tutorialFlag");
+    if (tutorialFlag === null) {
+      // Set the flag to "pending" and show the notification
+      localStorage.setItem("tutorialFlag", "pending");
       setOpen(true);
+    } else if (tutorialFlag === "pending") {
+      // Show the notification if the flag is "pending"
+      setOpen(true);
+    } else if (tutorialFlag === "started") {
+      // Show the tutorial if the flag is "started"
+      setTutorial(true);
     }
   }, []);
 
@@ -34,6 +39,8 @@ function TutorialWrapper({ children }) {
     // Close the notification and set the tutorial state to true
     setOpen(false);
     setTutorial(true);
+    // Set the flag to "started" in local storage
+    localStorage.setItem("tutorialFlag", "started");
   };
 
   // Handle the tutorial skip event
@@ -41,12 +48,16 @@ function TutorialWrapper({ children }) {
     // Close the notification and set the tutorial state to false
     setOpen(false);
     setTutorial(false);
+    // Set the flag to "skipped" in local storage
+    localStorage.setItem("tutorialFlag", "skipped");
   };
 
   // Handle the tutorial close event
   const handleTutorialClose = () => {
     // Set the tutorial state to false
     setTutorial(false);
+    // Set the flag to "skipped" in local storage
+    localStorage.setItem("tutorialFlag", "skipped");
   };
 
   // Define the tutorial items
@@ -64,7 +75,6 @@ function TutorialWrapper({ children }) {
       explanation: "This is the third step of the tutorial."
     }
   ];
-
   return (
     <div className="TutorialWrapper">
       {children}
@@ -120,6 +130,7 @@ function TutorialWrapper({ children }) {
 }
 
 export default TutorialWrapper;
+
 
 
 APP:
