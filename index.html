@@ -2,19 +2,28 @@ import React, { useState, useRef } from 'react';
 
 function Container() {
   const [pointerEvents, setPointerEvents] = useState('initial');
+  const [tapCount, setTapCount] = useState(0);
   const timer = useRef(null);
 
   function handleTouchStart() {
-    // start a timer when touch starts
+    // increment the tap count
+    setTapCount(tapCount + 1);
+    // start a timer to reset the tap count
     timer.current = setTimeout(() => {
-      // toggle pointer events after 500 ms
-      setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
-    }, 500);
+      setTapCount(0);
+    }, 300); // adjust the time interval as needed
   }
 
   function handleTouchEnd() {
-    // clear the timer when touch ends
+    // clear the timer
     clearTimeout(timer.current);
+    // check if the tap count is 2
+    if (tapCount === 2) {
+      // toggle pointer events
+      setPointerEvents(pointerEvents === 'initial' ? 'none' : 'initial');
+      // reset the tap count
+      setTapCount(0);
+    }
   }
 
   return (
