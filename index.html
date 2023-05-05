@@ -1,238 +1,29 @@
-import React, { useState, useEffect } from "react";
-import Carousel from "react-material-ui-carousel";
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import HelpIcon from "@mui/icons-material/Help";
-
-// Define a custom component for the next arrow
-function NextArrow(props) {
-  const { onClick } = props;
-  return (
-    <Button onClick={onClick} style={{ color: "red" }}>
-      <ChevronRightIcon />
-    </Button>
-  );
-}
-
-// Define a custom component for the prev arrow
-function PrevArrow(props) {
-  const { onClick } = props;
-  return (
-    <Button onClick={onClick} style={{ color: "red" }}>
-      <ChevronLeftIcon />
-    </Button>
-  );
-}
-
-// Define the tutorial wrapper component
-function TutorialWrapper({ children, openState }) {
-  // State for the notification
-  const [open, setOpen] = useState(false);
-
-  // State for the tutorial
-  const [tutorial, setTutorial] = useState(false);
-
-  // State for the last slide
-  const [lastSlide, setLastSlide] = useState(false);
-
-  // Check local storage for the tutorial flag
-  useEffect(() => {
-    const tutorialFlag = localStorage.getItem("tutorialFlag");
-    if (tutorialFlag === null) {
-      // Set the flag to "pending" and show the notification
-      localStorage.setItem("tutorialFlag", "pending");
-      setOpen(true);
-    } else if (tutorialFlag === "pending") {
-      // Show the notification if the flag is "pending"
-      setOpen(true);
-    } else if (tutorialFlag === "started") {
-      // Show the tutorial if the flag is "started"
-      setTutorial(true);
-    } else if (tutorialFlag === "skipped") {
-      // Check if one week has passed since the user skipped the tutorial
-      const skipTime = localStorage.getItem("skipTime");
-      const currentTime = Date.now();
-      const oneWeek = 14 * 24 * 60 * 60 * 1000; // milliseconds in one week
-      if (currentTime - skipTime >= oneWeek) {
-        // Set the flag to "pending" and show the notification again
-        localStorage.setItem("tutorialFlag", "pending");
-        setOpen(true);
-      }
-    } else if (tutorialFlag === "completed") {
-      // Do nothing if the flag is "completed"
-      return;
-    }
-  }, []);
-
-  // Handle the notification close event
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
-
-  // Handle the tutorial start event
-  const handleStart = () => {
-    // Close the notification and set the tutorial state to true
-    setOpen(false);
-    setTutorial(true);
-    // Set the flag to "completed" in local storage
-    localStorage.setItem("tutorialFlag", "completed");
-  };
-
-  // Handle the tutorial skip event
-  const handleSkip = () => {
-    // Close the notification and set the tutorial state to false
-    setOpen(false);
-    setTutorial(false);
-    // Set the flag to "skipped" in local storage
-    localStorage.setItem("tutorialFlag", "skipped");
-    // Store the current time in local storage
-    localStorage.setItem("skipTime", Date.now());
-  };
-
-  // Handle the tutorial close event
-  const handleTutorialClose = () => {
-    // Close the tutorial and set the tutorial state to false
-    setTutorial(false);
-    // Set the flag to "completed" in local storage
-    localStorage.setItem("tutorialFlag", "completed");
-  };
-
-  // Handle the carousel change event
-  const handleCarouselChange = (index) => {
-    // Check if the index is equal to the length of items minus one
-    if (index === items.length - 1) {
-      // Set the last slide state to true
-      setLastSlide(true);
-    } else {
-      // Set the last slide state to false
-      setLastSlide(false);
-    }
-  };
-
-  // Define the tutorial items with an object for the last slide without an image
-  const items = [
-    {
-      image: "https://via.placeholder.com/300x400",
-      explanation: "This is the first step of the tutorial."
-    },
-    {
-      image: "https://via.placeholder.com/300x400",
-      explanation: "This is the second"
-    },
-    {
-      icon: <CheckCircleIcon style={{ fontSize: "300px", color: "green" }} />,
-      text: "This is the last step of the tutorial."
-    }
-  ];
-
-  return (
-    <div className="TutorialWrapper">
-      {children}
-      <Snackbar
-        open={open}
-        onClose={handleClose}
-        message="Do you want a tutorial?"
-        action={
-          <div>
-            <Button color="secondary" size="small" onClick={handleSkip}>
-              SKIP
-            </Button>
-            <Button color="primary" size="small" onClick={handleStart}>
-              START
-            </Button>
-          </div>
-        }
-      />
-      <Dialog
-        style={{ textAlign: "center" }}
-        open={tutorial}
-        onClose={handleTutorialClose}
-        fullScreen
+<Carousel
+  renderIndicator={(onClickHandler, isSelected, index, label) => {
+    const defStyle = {
+      marginLeft: 20,
+      color: "white",
+      cursor: "pointer",
+      opacity: 0.7 // change opacity for unselected indicators
+    };
+    const style = isSelected
+      ? { ...defStyle, opacity: 1 } // change opacity for selected indicator
+      : { ...defStyle };
+    return (
+      <span
+        style={style}
+        onClick={onClickHandler}
+        onKeyDown={onClickHandler}
+        value={index}
+        key={index}
+        role="button"
+        tabIndex={0}
+        aria-label={`${label} ${index + 1}`}
       >
-        <DialogContent>
-          <h2>This is a tutorial</h2>
-          <CloseIcon
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              cursor: "pointer"
-            }}
-            onClick={handleTutorialClose}
-          />
-          <Carousel
-            cycleNavigation={false} // Disable wrapping
-            navButtonsAlwaysVisible
-            interval={99999}
-            stopAutoPlayOnHover // Prevent the weird animation on hover
-            onChange={handleCarouselChange} // Handle the carousel change event
-            Next={NextArrow} // Use the NextArrow component as the next prop
-            Prev={PrevArrow} // Use the PrevArrow component as the prev prop
-            navButtonsProps={{
-              // Style the nav buttons
-              style: {
-                backgroundColor: "transparent",
-                borderRadius: 0,
-                margin: 0,
-                position: "absolute",
-                top: "50%",
-                transform: "translateY(-50%)",
-                left: "-50px", // Move the prev button to the left side of the image
-                right: "-50px", // Move the next button to the right side of the image
-                width: "100px", // Adjust the width of the buttons
-                height: "100px" // Adjust the height of the buttons
-              }
-            }}
-            index={0} // Set initial index to zero
-          >
-            {items.map((item, i) => (
-              <div key={i} style={{ position: "relative" }}>
-                {item.icon ? ( // Check if the item has an icon or an image
-                  // Render the icon and the text for the last slide
-                  <>
-                    {item.icon}
-                    <p>{item.text}</p>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleTutorialClose}
-                    >
-                      Go to App
-                    </Button>
-                    {lastSlide && (
-                      <h3>Awesome! You have completed the tutorial.</h3>
-                    )}
-                  </>
-                ) : (
-                  // Render the image and the explanation for the other slides
-                  <>
-                    <img
-                      src={item.image}
-                      alt={`Step ${i + 1}`}
-                      width="300"
-                      height="400"
-                    />
-                    <p>{item.explanation}</p>
-                  </>
-                )}
-              </div>
-            ))}
-          </Carousel>
-        </DialogContent>
-      </Dialog>
-
-      <HelpIcon onClick={() => setTutorial(true)} />
-    </div>
-  );
-}
-
-export default TutorialWrapper;
+        &#9679;
+      </span>
+    );
+  }}
+>
+  {/* Your carousel items here */}
+</Carousel>
