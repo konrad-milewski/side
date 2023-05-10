@@ -1,29 +1,14 @@
-<Carousel
-  renderIndicator={(onClickHandler, isSelected, index, label) => {
-    const defStyle = {
-      marginLeft: 20,
-      color: "white",
-      cursor: "pointer",
-      opacity: 0.7 // change opacity for unselected indicators
-    };
-    const style = isSelected
-      ? { ...defStyle, opacity: 1 } // change opacity for selected indicator
-      : { ...defStyle };
-    return (
-      <span
-        style={style}
-        onClick={onClickHandler}
-        onKeyDown={onClickHandler}
-        value={index}
-        key={index}
-        role="button"
-        tabIndex={0}
-        aria-label={`${label} ${index + 1}`}
-      >
-        &#9679;
-      </span>
-    );
-  }}
->
-  {/* Your carousel items here */}
-</Carousel>
+// Get the div element with id="loader"
+var loader = document.getElementById("loader");
+
+// Set a timer to check the display property after 45 seconds
+var timer = setTimeout(function() {
+  // Get the computed style of the div element
+  var style = window.getComputedStyle(loader, null);
+
+  // If the display property is not "none", alert the user and open an email
+  if (style.display != "none") {
+    alert("You probably don't have access to some app in mashup and need to contact.");
+    window.open("mailto:your_email@example.com");
+  }
+}, 45000);
