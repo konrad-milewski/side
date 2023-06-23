@@ -21,21 +21,18 @@ const ShortcutModal = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      // Use some padding and margin for spacing
-      p={2}
-      m={2}
-      // Use inline styles to make the modal cover the whole screen and have a white background
+      // Use inline styles to make the modal cover the whole screen and have a dark blue background
       style={{
         position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "white",
+        backgroundColor: "rgb(0,65,75)",
       }}
     >
-      {/* Render a large icon component in the middle */}
-      <AddToHomeScreenIcon style={{ fontSize: "10rem" }} />
+      {/* Render a large icon component in the middle with some margin top */}
+      <AddToHomeScreenIcon style={{ fontSize: "10rem", marginTop: "25px" }} />
       {/* Render a box at the bottom with a button and some information */}
       <Box
         // Use flexbox to align the items horizontally
@@ -43,24 +40,22 @@ const ShortcutModal = () => {
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
-        // Use some padding and margin for spacing
-        p={2}
-        m={2}
-        // Use inline styles to make the box fixed at the bottom of the screen and have a gray background
+        // Use inline styles to make the box fixed at the bottom of the screen and have a white background and text color
         style={{
           position: "fixed",
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: "lightgray",
+          backgroundColor: "white",
+          color: "white",
         }}
       >
-        {/* Render a button to close the modal */}
-        <Button variant="contained" onClick={handleClose}>
+        {/* Render a button to close the modal with a white text color */}
+        <Button variant="contained" onClick={handleClose} style={{ color: "white" }}>
           Close
         </Button>
-        {/* Render some information about how to create a shortcut on iOS */}
-        <Typography variant="body1" align="center">
+        {/* Render some information about how to create a shortcut on iOS with a white text color */}
+        <Typography variant="body1" align="center" style={{ color: "white" }}>
           To create a shortcut on iOS, tap the Share icon at the bottom of the screen and select Add to Home Screen.
         </Typography>
       </Box>
@@ -70,8 +65,8 @@ const ShortcutModal = () => {
   // Return the modal component
   return (
     <>
-      {/* Render a small icon that can be clicked to open the modal */}
-      <AddToHomeScreenIcon onClick={handleOpen} />
+      {/* Render a small icon that can be clicked to open the modal with a white text color */}
+      <AddToHomeScreenIcon onClick={handleOpen} style={{ color: "white" }} />
       {/* Render the modal with the content and accessibility attributes */}
       <Modal
         open={open}
