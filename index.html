@@ -1,14 +1,73 @@
-// Get the div element with id="loader"
-var loader = document.getElementById("loader");
+// Import React and Material UI components
+import React, { useState } from "react";
+import { Modal, Box, Button, Typography } from "@mui/material";
 
-// Set a timer to check the display property after 45 seconds
-var timer = setTimeout(function() {
-  // Get the computed style of the div element
-  var style = window.getComputedStyle(loader, null);
+// Define a custom icon component
+const Icon = () => {
+  // You can use any icon you want here
+  // For simplicity, I'm using a text emoji
+  return <Typography variant="h1" align="center">🐲</Typography>;
+};
 
-  // If the display property is not "none", alert the user and open an email
-  if (style.display != "none") {
-    alert("You probably don't have access to some app in mashup and need to contact.");
-    window.open("mailto:your_email@example.com");
-  }
-}, 45000);
+// Define a custom modal component
+const ShortcutModal = () => {
+  // Use state to manage the modal open/close status
+  const [open, setOpen] = useState(false);
+
+  // Define handlers for opening and closing the modal
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // Define the modal content
+  const modalContent = (
+    <Box
+      // Use flexbox to center the content vertically and horizontally
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      // Use some padding and margin for spacing
+      p={2}
+      m={2}
+      // Use inline styles to make the modal cover the whole screen
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    >
+      {/* Render the icon component in the middle */}
+      <Icon />
+      {/* Render a button at the bottom to close the modal */}
+      <Button variant="contained" onClick={handleClose}>
+        Close
+      </Button>
+      {/* Render some information above the button */}
+      <Typography variant="body1" align="center">
+        To create a shortcut on iOS, tap the Share icon at the bottom of the screen and select Add to Home Screen.
+      </Typography>
+    </Box>
+  );
+
+  // Return the modal component
+  return (
+    <>
+      {/* Render an icon that can be clicked to open the modal */}
+      <Icon onClick={handleOpen} />
+      {/* Render the modal with the content and accessibility attributes */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="shortcut-modal-title"
+        aria-describedby="shortcut-modal-description"
+      >
+        {modalContent}
+      </Modal>
+    </>
+  );
+};
+
+// Export the modal component
+export default ShortcutModal;
