@@ -1,13 +1,8 @@
 // Import React and Material UI components
 import React, { useState } from "react";
 import { Modal, Box, Button, Typography } from "@mui/material";
-
-// Define a custom icon component
-const Icon = () => {
-  // You can use any icon you want here
-  // For simplicity, I'm using a text emoji
-  return <Typography variant="h1" align="center">🐲</Typography>;
-};
+// Import an icon from Material UI Icons
+import AddToHomeScreenIcon from "@mui/icons-material/AddToHomeScreen";
 
 // Define a custom modal component
 const ShortcutModal = () => {
@@ -29,33 +24,54 @@ const ShortcutModal = () => {
       // Use some padding and margin for spacing
       p={2}
       m={2}
-      // Use inline styles to make the modal cover the whole screen
+      // Use inline styles to make the modal cover the whole screen and have a white background
       style={{
         position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
+        backgroundColor: "white",
       }}
     >
-      {/* Render the icon component in the middle */}
-      <Icon />
-      {/* Render a button at the bottom to close the modal */}
-      <Button variant="contained" onClick={handleClose}>
-        Close
-      </Button>
-      {/* Render some information above the button */}
-      <Typography variant="body1" align="center">
-        To create a shortcut on iOS, tap the Share icon at the bottom of the screen and select Add to Home Screen.
-      </Typography>
+      {/* Render a large icon component in the middle */}
+      <AddToHomeScreenIcon style={{ fontSize: "10rem" }} />
+      {/* Render a box at the bottom with a button and some information */}
+      <Box
+        // Use flexbox to align the items horizontally
+        display="flex"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        // Use some padding and margin for spacing
+        p={2}
+        m={2}
+        // Use inline styles to make the box fixed at the bottom of the screen and have a gray background
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "lightgray",
+        }}
+      >
+        {/* Render a button to close the modal */}
+        <Button variant="contained" onClick={handleClose}>
+          Close
+        </Button>
+        {/* Render some information about how to create a shortcut on iOS */}
+        <Typography variant="body1" align="center">
+          To create a shortcut on iOS, tap the Share icon at the bottom of the screen and select Add to Home Screen.
+        </Typography>
+      </Box>
     </Box>
   );
 
   // Return the modal component
   return (
     <>
-      {/* Render an icon that can be clicked to open the modal */}
-      <Icon onClick={handleOpen} />
+      {/* Render a small icon that can be clicked to open the modal */}
+      <AddToHomeScreenIcon onClick={handleOpen} />
       {/* Render the modal with the content and accessibility attributes */}
       <Modal
         open={open}
